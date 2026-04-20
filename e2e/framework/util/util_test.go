@@ -30,6 +30,7 @@ import (
 
 	esv1alpha1 "github.com/external-secrets/external-secrets/apis/externalsecrets/v1alpha1"
 	esv2alpha1 "github.com/external-secrets/external-secrets/apis/externalsecrets/v2alpha1"
+	gcpsmv2alpha1 "github.com/external-secrets/external-secrets/apis/provider/gcp/v2alpha1"
 )
 
 func TestClearKnownNamespaceFinalizers(t *testing.T) {
@@ -167,6 +168,11 @@ func TestSchemeIncludesV2StoreTypes(t *testing.T) {
 			name:   "ClusterProviderStore",
 			object: &esv2alpha1.ClusterProviderStore{},
 			wantGV: esv2alpha1.SchemeGroupVersion.WithKind("ClusterProviderStore"),
+		},
+		{
+			name:   "GCP SecretManager",
+			object: &gcpsmv2alpha1.SecretManager{},
+			wantGV: gcpsmv2alpha1.GroupVersion.WithKind(gcpsmv2alpha1.SecretManagerKind),
 		},
 	}
 

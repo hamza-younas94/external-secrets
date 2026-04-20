@@ -66,6 +66,7 @@ replace (
 	github.com/external-secrets/external-secrets/providers/v2/aws => ./providers/v2/aws
 	github.com/external-secrets/external-secrets/providers/v2/common => ./providers/v2/common
 	github.com/external-secrets/external-secrets/providers/v2/fake => ./providers/v2/fake
+	github.com/external-secrets/external-secrets/providers/v2/gcp => ./providers/v2/gcp
 	github.com/external-secrets/external-secrets/runtime => ./runtime
 )
 
@@ -220,6 +221,7 @@ require (
 	github.com/external-secrets/external-secrets/providers/v2/aws v0.0.0-00010101000000-000000000000
 	github.com/external-secrets/external-secrets/providers/v2/common v0.0.0
 	github.com/external-secrets/external-secrets/providers/v2/fake v0.0.0-00010101000000-000000000000
+	github.com/external-secrets/external-secrets/providers/v2/gcp v0.0.0-00010101000000-000000000000
 )
 
 require (

@@ -17,9 +17,13 @@ limitations under the License.
 package addon
 
 import (
+	"context"
 	"os"
 	"path/filepath"
 	"time"
+
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	// nolint
 	. "github.com/onsi/ginkgo/v2"
@@ -32,6 +36,7 @@ type ESO struct {
 const (
 	installCRDsVar = "installCRDs"
 	esoImage       = "ghcr.io/external-secrets/external-secrets"
+	providerTLSSecretName = "external-secrets-provider-tls"
 )
 
 func NewESO(mutators ...MutationFunc) *ESO {
@@ -228,6 +233,10 @@ func (l *ESO) Install() error {
 	}
 
 	By("Installing eso\n")
+	if err := l.cleanupProviderTLSSecretIfNeeded(GinkgoT().Context()); err != nil {
+		return err
+	}
+
 	err := l.HelmChart.Install()
 	if err != nil {
 		return err
@@ -256,6 +265,21 @@ func (l *ESO) Uninstall() error {
 		return err
 	}
 	return nil
+}
+
+func (l *ESO) cleanupProviderTLSSecretIfNeeded(ctx context.Context) error {
+	if l.config == nil || l.config.KubeClientSet == nil {
+		return nil
+	}
+	if !l.HelmChart.HasVar("providers.enabled", "true") {
+		return nil
+	}
+
+	err := l.config.KubeClientSet.CoreV1().Secrets(l.Namespace).Delete(ctx, providerTLSSecretName, metav1.DeleteOptions{})
+	if apierrors.IsNotFound(err) {
+		return nil
+	}
+	return err
 }
 
 func needsCRDPreinstall(chart *HelmChart) bool {

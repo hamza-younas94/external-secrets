@@ -36,13 +36,7 @@ import (
 var _ = SynchronizedBeforeSuite(func() []byte {
 	if framework.IsV2ProviderMode() {
 		By("installing eso in provider v2 mode")
-		addon.InstallGlobalAddon(addon.NewESO(
-			addon.WithCRDs(),
-			addon.WithV2Namespace(),
-			addon.WithV2KubernetesProvider(),
-			addon.WithV2FakeProvider(),
-			addon.WithV2AWSProvider(),
-		))
+		addon.InstallGlobalAddon(newProviderV2ESO())
 		return nil
 	}
 
@@ -90,6 +84,17 @@ var _ = SynchronizedAfterSuite(func() {
 		addon.PrintLogs()
 	}
 })
+
+func newProviderV2ESO() *addon.ESO {
+	return addon.NewESO(
+		addon.WithCRDs(),
+		addon.WithV2Namespace(),
+		addon.WithV2KubernetesProvider(),
+		addon.WithV2FakeProvider(),
+		addon.WithV2AWSProvider(),
+		addon.WithV2GCPProvider(),
+	)
+}
 
 func TestE2E(t *testing.T) {
 	NewWithT(t)
